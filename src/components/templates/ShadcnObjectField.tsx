@@ -1,0 +1,44 @@
+import { ObjectSchema } from "@m6oss/schema-form";
+import { SchemaDefinitions } from "@m6oss/schema-form";
+import { JSONSchema7, CustomFields } from "@m6oss/schema-form";
+import { renderField } from "@m6oss/schema-form";
+import { Label } from "../ui/label";
+
+/**
+ * Object Field Component Template
+ * @param {ObjectSchema} schema - The schema for the object field.
+ * @param {string[]} path - The path to the object field in the form data.
+ * @param {SchemaDefinitions} definitions - The definitions object from the schema.
+ * @param {CustomFields} customFields - The custom fields object.
+ * @returns {JSX.Element} - The object field component.
+ * @example
+ * <ShadcnObjectField schema={schema} path={path} definitions={definitions} customFields={customFields} />
+ *
+ */
+export const ShadcnObjectField: React.FC<{
+  schema: ObjectSchema;
+  path: string[];
+  definitions: SchemaDefinitions;
+  customFields?: CustomFields;
+}> = ({ schema, path, definitions, customFields = {} }) => {
+  return (
+    <div className="border border-gray-300 dark:border-gray-600 p-4 my-4 flex flex-col space-y-2">
+      {schema.title && <Label>{schema.title}</Label>}
+      {schema.description && (
+        <p className="text-sm text-muted-foreground">{schema.description}</p>
+      )}
+      <br />
+      {schema.properties &&
+        Object.keys(schema.properties).map((key) => (
+          <div key={key}>
+            {renderField(
+              schema.properties?.[key] as JSONSchema7,
+              [...path, key],
+              definitions,
+              customFields
+            )}
+          </div>
+        ))}
+    </div>
+  );
+};

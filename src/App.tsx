@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import formSchema from "./schema.json";
+import { JSONSchema7, FormProvider } from "@m6oss/schema-form";
+import { Layout } from "./components/site/Layout";
+import {
+  shadcnCustomFields,
+  ShadcnFormComponent,
+} from "./components/templates";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const schema: JSONSchema7 = formSchema as JSONSchema7;
+
+  const initialData = {
+    firstName: "John Doe",
+    lastName: "Doe",
+    age: 30,
+    email: "john.doe@example.com",
+    homepage: "https://example.com",
+    birthday: "1990-01-01",
+    is_active: true,
+    address: {
+      street_address: "123 Main St",
+      city: "Somewhere",
+      state: "CA",
+    },
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Layout>
+      <div className="max-w-2xl pb-10">
+        <FormProvider schema={schema} initialData={initialData}>
+          <ShadcnFormComponent
+            onSubmit={(data) => console.log("Form submitted:", data)}
+            onError={(errors) => console.error("Form errors:", errors)}
+            customFields={shadcnCustomFields}
+          />
+        </FormProvider>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    </Layout>
+  );
+};
 
-export default App
+export default App;
