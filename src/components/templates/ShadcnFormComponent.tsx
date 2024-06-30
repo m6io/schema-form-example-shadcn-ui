@@ -2,6 +2,7 @@ import { ErrorObject } from "@m6oss/schema-form";
 import { useFormContext, JSONSchema7, CustomFields } from "@m6oss/schema-form";
 import { renderField } from "@m6oss/schema-form";
 import { AjvInstance } from "@m6oss/schema-form";
+import { Button } from "../ui/button";
 
 /**
  * Represents a JSON object.
@@ -61,7 +62,7 @@ function removeKeys(keys: string[], obj: JSONObject): JSONObject {
  */
 export const ShadcnFormComponent: React.FC<{
   onSubmit: (data: { [key: string]: unknown }) => void;
-  onError: (errors: ErrorObject[]) => void;
+  onError: (errors: ErrorObject[], data?: { [key: string]: unknown }) => void;
   customFields?: CustomFields;
 }> = ({ onSubmit, onError, customFields = {} }) => {
   const schema = useFormContext((state) => state.schema);
@@ -83,7 +84,7 @@ export const ShadcnFormComponent: React.FC<{
       onSubmit(formData);
     } else {
       setErrors(validate.errors ?? null);
-      onError(validate.errors ?? []);
+      onError(validate.errors ?? [], formData);
     }
   };
 
@@ -99,12 +100,9 @@ export const ShadcnFormComponent: React.FC<{
           )}
         </div>
       ))}
-      <button
-        type="submit"
-        className="bg-blue-500 text-white py-2 px-4 rounded dark:bg-blue-600"
-      >
+      <Button variant={"default"} type="submit">
         Submit
-      </button>
+      </Button>
     </form>
   );
 };

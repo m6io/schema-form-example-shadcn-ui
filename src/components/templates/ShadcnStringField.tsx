@@ -1,5 +1,4 @@
-import { useFormContext, StringSchema } from "@m6oss/schema-form";
-import { ShadcnErrorMessage } from "./ShadcnErrorMessage";
+import { StringSchema, useFieldErrors, useFieldData } from "@m6oss/schema-form";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -17,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 
-export const ShadcnTextField: React.FC<{
+export const ShadcnStringField: React.FC<{
   schema: StringSchema;
   path: string[];
 }> = ({ schema, path }) => {
@@ -31,7 +30,7 @@ export const ShadcnTextField: React.FC<{
   ) {
     return <ShadcnDateField schema={schema} path={path} />;
   } // Check if the schema has a uiSchema of textarea. If so, return the ShadcnTextareaField component.
-  else if (schema.uiSchema === "textarea") {
+  else if (schema.uiSchema?.component === "textarea") {
     return <ShadcnTextareaField schema={schema} path={path} />;
   }
   return <ShadcnInputField schema={schema} path={path} />;
@@ -49,17 +48,17 @@ const ShadcnInputField: React.FC<{
   schema: StringSchema;
   path: string[];
 }> = ({ schema, path }) => {
-  const formData = useFormContext((state) => state.formData);
-  const setFormData = useFormContext((state) => state.setFormData);
-  const valueAtPath = path.reduce((acc, key) => acc?.[key], formData) ?? null;
+  const [valueAtPath, setValueAtPath] = useFieldData(path);
+  const errorsAtPath = useFieldErrors(path);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(path, event.target.value);
+    setValueAtPath(event.target.value);
   };
 
   const inputType =
     schema.format && ["password", "email", "url"].includes(schema.format)
       ? schema.format
-      : schema.uiSchema === "tel"
+      : schema.uiSchema?.component === "tel"
         ? "tel"
         : "text";
 
@@ -88,7 +87,12 @@ const ShadcnInputField: React.FC<{
           ))}
         </datalist>
       )}
-      <ShadcnErrorMessage path={path} />
+      {errorsAtPath &&
+        errorsAtPath.map((error, index) => (
+          <p key={index} className="text-sm font-medium text-destructive">
+            {error.message}
+          </p>
+        ))}
     </div>
   );
 };
@@ -105,11 +109,11 @@ const ShadcnTextareaField: React.FC<{
   schema: StringSchema;
   path: string[];
 }> = ({ schema, path }) => {
-  const formData = useFormContext((state) => state.formData);
-  const setFormData = useFormContext((state) => state.setFormData);
-  const valueAtPath = path.reduce((acc, key) => acc?.[key], formData) ?? null;
+  const [valueAtPath, setValueAtPath] = useFieldData(path);
+  const errorsAtPath = useFieldErrors(path);
+
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormData(path, event.target.value);
+    setValueAtPath(event.target.value);
   };
 
   return (
@@ -124,7 +128,12 @@ const ShadcnTextareaField: React.FC<{
       {schema.description && (
         <p className="text-sm text-muted-foreground">{schema.description}</p>
       )}
-      <ShadcnErrorMessage path={path} />
+      {errorsAtPath &&
+        errorsAtPath.map((error, index) => (
+          <p key={index} className="text-sm font-medium text-destructive">
+            {error.message}
+          </p>
+        ))}
     </div>
   );
 };
@@ -141,16 +150,15 @@ const ShadcnSelectField: React.FC<{
   schema: StringSchema;
   path: string[];
 }> = ({ schema, path }) => {
-  const formData = useFormContext((state) => state.formData);
-  const setFormData = useFormContext((state) => state.setFormData);
-  const valueAtPath = path.reduce((acc, key) => acc?.[key], formData) ?? "";
+  const [valueAtPath, setValueAtPath] = useFieldData(path, "");
+  const errorsAtPath = useFieldErrors(path);
 
   return (
     <div className="space-y-2 flex flex-col">
       {schema.title && <Label>{schema.title}</Label>}
       <Select
         value={valueAtPath}
-        onValueChange={(value) => setFormData(path, value)}
+        onValueChange={(value) => setValueAtPath(value)}
       >
         <SelectTrigger value="">
           <SelectValue placeholder="" />
@@ -172,7 +180,12 @@ const ShadcnSelectField: React.FC<{
       {schema.description && (
         <p className="text-sm text-muted-foreground">{schema.description}</p>
       )}
-      <ShadcnErrorMessage path={path} />
+      {errorsAtPath &&
+        errorsAtPath.map((error, index) => (
+          <p key={index} className="text-sm font-medium text-destructive">
+            {error.message}
+          </p>
+        ))}
     </div>
   );
 };
@@ -189,9 +202,8 @@ const ShadcnDateField: React.FC<{
   schema: StringSchema;
   path: string[];
 }> = ({ schema, path }) => {
-  const formData = useFormContext((state) => state.formData);
-  const setFormData = useFormContext((state) => state.setFormData);
-  const valueAtPath = path.reduce((acc, key) => acc?.[key], formData) ?? "";
+  const [valueAtPath, setValueAtPath] = useFieldData(path, "");
+  const errorsAtPath = useFieldErrors(path);
 
   return (
     <div className="space-y-2 flex flex-col">
@@ -218,7 +230,7 @@ const ShadcnDateField: React.FC<{
           <Calendar
             mode="single"
             selected={valueAtPath}
-            onSelect={(date: Date | undefined) => setFormData(path, date)}
+            onSelect={(date: Date | undefined) => setValueAtPath(date)}
             disabled={(date: Date) =>
               date > new Date() || date < new Date("1900-01-01")
             }
@@ -229,7 +241,12 @@ const ShadcnDateField: React.FC<{
       {schema.description && (
         <p className="text-sm text-muted-foreground">{schema.description}</p>
       )}
-      <ShadcnErrorMessage path={path} />
+      {errorsAtPath &&
+        errorsAtPath.map((error, index) => (
+          <p key={index} className="text-sm font-medium text-destructive">
+            {error.message}
+          </p>
+        ))}
     </div>
   );
 };

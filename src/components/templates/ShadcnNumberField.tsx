@@ -1,6 +1,4 @@
-import { NumberSchema } from "@m6oss/schema-form";
-import { useFormContext } from "@m6oss/schema-form";
-import { ShadcnErrorMessage } from "./ShadcnErrorMessage";
+import { NumberSchema, useFieldData, useFieldErrors } from "@m6oss/schema-form";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 
@@ -17,11 +15,11 @@ export const ShadcnNumberField: React.FC<{
   schema: NumberSchema;
   path: string[];
 }> = ({ schema, path }) => {
-  const formData = useFormContext((state) => state.formData);
-  const setFormData = useFormContext((state) => state.setFormData);
-  const valueAtPath = path.reduce((acc, key) => acc?.[key], formData) ?? null;
+  const [valueAtPath, setValueAtPath] = useFieldData(path);
+  const errorsAtPath = useFieldErrors(path);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(path, event.target.value ? Number(event.target.value) : null);
+    setValueAtPath(event.target.value ? Number(event.target.value) : null);
   };
 
   return (
@@ -49,7 +47,12 @@ export const ShadcnNumberField: React.FC<{
           ))}
         </datalist>
       )}
-      <ShadcnErrorMessage path={path} />
+      {errorsAtPath &&
+        errorsAtPath.map((error, index) => (
+          <p key={index} className="text-sm font-medium text-destructive">
+            {error.message}
+          </p>
+        ))}
     </div>
   );
 };

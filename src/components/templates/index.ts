@@ -3,7 +3,7 @@ import { ShadcnArrayField } from "./ShadcnArrayField";
 import { ShadcnBooleanField } from "./ShadcnBooleanField";
 import { ShadcnNumberField } from "./ShadcnNumberField";
 import { ShadcnObjectField } from "./ShadcnObjectField";
-import { ShadcnTextField } from "./ShadcnTextField";
+import { ShadcnStringField } from "./ShadcnStringField";
 import { ShadcnFormComponent } from "./ShadcnFormComponent";
 
 /**
@@ -14,7 +14,7 @@ const shadcnCustomFields: CustomFields = {
   BooleanField: ShadcnBooleanField,
   NumberField: ShadcnNumberField,
   ObjectField: ShadcnObjectField,
-  TextField: ShadcnTextField,
+  StringField: ShadcnStringField,
 };
 
 export { shadcnCustomFields, ShadcnFormComponent };

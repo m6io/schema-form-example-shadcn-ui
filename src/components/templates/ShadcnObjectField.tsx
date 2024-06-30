@@ -1,4 +1,4 @@
-import { ObjectSchema } from "@m6oss/schema-form";
+import { BaseObjectSchema, useFieldErrors } from "@m6oss/schema-form";
 import { SchemaDefinitions } from "@m6oss/schema-form";
 import { JSONSchema7, CustomFields } from "@m6oss/schema-form";
 import { renderField } from "@m6oss/schema-form";
@@ -6,7 +6,7 @@ import { Label } from "../ui/label";
 
 /**
  * Object Field Component Template
- * @param {ObjectSchema} schema - The schema for the object field.
+ * @param {BaseObjectSchema} schema - The schema for the object field.
  * @param {string[]} path - The path to the object field in the form data.
  * @param {SchemaDefinitions} definitions - The definitions object from the schema.
  * @param {CustomFields} customFields - The custom fields object.
@@ -16,17 +16,25 @@ import { Label } from "../ui/label";
  *
  */
 export const ShadcnObjectField: React.FC<{
-  schema: ObjectSchema;
+  schema: BaseObjectSchema;
   path: string[];
   definitions: SchemaDefinitions;
   customFields?: CustomFields;
 }> = ({ schema, path, definitions, customFields = {} }) => {
+  const errorsAtPath = useFieldErrors(path);
+
   return (
     <div className="border border-gray-300 dark:border-gray-600 p-4 my-4 flex flex-col space-y-2">
       {schema.title && <Label>{schema.title}</Label>}
       {schema.description && (
         <p className="text-sm text-muted-foreground">{schema.description}</p>
       )}
+      {errorsAtPath &&
+        errorsAtPath.map((error, index) => (
+          <p key={index} className="text-sm font-medium text-destructive">
+            {error.message}
+          </p>
+        ))}
       <br />
       {schema.properties &&
         Object.keys(schema.properties).map((key) => (

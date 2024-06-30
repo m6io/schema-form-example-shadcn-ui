@@ -1,6 +1,8 @@
-import { BooleanSchema } from "@m6oss/schema-form";
-import { useFormContext } from "@m6oss/schema-form";
-import { ShadcnErrorMessage } from "./ShadcnErrorMessage";
+import {
+  BooleanSchema,
+  useFieldData,
+  useFieldErrors,
+} from "@m6oss/schema-form";
 import { Label } from "../ui/label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Switch } from "../ui/switch";
@@ -25,7 +27,7 @@ export const ShadcnBooleanField: React.FC<{
   }
 
   // Return the appropriate boolean field based on the uiSchema.
-  switch (schema.uiSchema) {
+  switch (schema.uiSchema?.component) {
     case "radio":
       return <ShadcnRadioBooleanField schema={schema} path={path} />;
     case "switch":
@@ -66,18 +68,17 @@ export const ShadcnRadioBooleanField: React.FC<{
   schema: BooleanSchema;
   path: string[];
 }> = ({ schema, path }) => {
-  const formData = useFormContext((state) => state.formData);
-  const setFormData = useFormContext((state) => state.setFormData);
-  const valueAtPath = path.reduce((acc, key) => acc?.[key], formData) ?? false;
+  const [valueAtPath, setValueAtPath] = useFieldData(path, false);
+  const errorsAtPath = useFieldErrors(path);
 
-  if (!schema.oneOf || schema.uiSchema !== "radio") {
+  if (!schema.oneOf || schema.uiSchema?.component !== "radio") {
     return;
   } else {
     return (
       <div className="flex flex-col space-y-2">
         {schema.title && <Label>{schema.title}</Label>}
         <RadioGroup
-          onValueChange={(value) => setFormData(path, value === "true")} // if value is 'true' then set value to true, else false
+          onValueChange={(value) => setValueAtPath(value === "true")} // if value is 'true' then set value to true, else false
           defaultValue={valueAtPath}
           className="flex flex-col space-y-1"
         >
@@ -91,11 +92,15 @@ export const ShadcnRadioBooleanField: React.FC<{
             </div>
           ))}
         </RadioGroup>
-
         {schema.description && (
           <p className="text-sm text-muted-foreground">{schema.description}</p>
         )}
-        <ShadcnErrorMessage path={path} />
+        {errorsAtPath &&
+          errorsAtPath.map((error, index) => (
+            <p key={index} className="text-sm font-medium text-destructive">
+              {error.message}
+            </p>
+          ))}
       </div>
     );
   }
@@ -132,11 +137,10 @@ export const ShadcnSwitchBooleanField: React.FC<{
   schema: BooleanSchema;
   path: string[];
 }> = ({ schema, path }) => {
-  const formData = useFormContext((state) => state.formData);
-  const setFormData = useFormContext((state) => state.setFormData);
-  const valueAtPath = path.reduce((acc, key) => acc?.[key], formData) ?? false;
+  const [valueAtPath, setValueAtPath] = useFieldData(path, false);
+  const errorsAtPath = useFieldErrors(path);
 
-  if (!schema.oneOf || schema.uiSchema !== "switch") {
+  if (!schema.oneOf || schema.uiSchema?.component !== "switch") {
     return;
   } else {
     return (
@@ -155,13 +159,17 @@ export const ShadcnSwitchBooleanField: React.FC<{
           </div>
           <Switch
             checked={valueAtPath}
-            onCheckedChange={(checked) => setFormData(path, checked)}
+            onCheckedChange={(checked) => setValueAtPath(checked)}
             disabled={schema.readOnly ?? false}
             aria-readonly={schema.readOnly ?? false}
           />
         </div>
-
-        <ShadcnErrorMessage path={path} />
+        {errorsAtPath &&
+          errorsAtPath.map((error, index) => (
+            <p key={index} className="text-sm font-medium text-destructive">
+              {error.message}
+            </p>
+          ))}
       </div>
     );
   }
@@ -187,16 +195,15 @@ export const ShadcnCheckboxBooleanField: React.FC<{
   schema: BooleanSchema;
   path: string[];
 }> = ({ schema, path }) => {
-  const formData = useFormContext((state) => state.formData);
-  const setFormData = useFormContext((state) => state.setFormData);
-  const valueAtPath = path.reduce((acc, key) => acc?.[key], formData) ?? false;
+  const [valueAtPath, setValueAtPath] = useFieldData(path, false);
+  const errorsAtPath = useFieldErrors(path);
 
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
         <Checkbox
           checked={valueAtPath}
-          onCheckedChange={(checked) => setFormData(path, checked)}
+          onCheckedChange={(checked) => setValueAtPath(checked)}
         />
         <div className="space-y-1 leading-none">
           {schema.title && <Label>{schema.title}</Label>}
@@ -207,7 +214,12 @@ export const ShadcnCheckboxBooleanField: React.FC<{
           )}
         </div>
       </div>
-      <ShadcnErrorMessage path={path} />
+      {errorsAtPath &&
+        errorsAtPath.map((error, index) => (
+          <p key={index} className="text-sm font-medium text-destructive">
+            {error.message}
+          </p>
+        ))}
     </div>
   );
 };

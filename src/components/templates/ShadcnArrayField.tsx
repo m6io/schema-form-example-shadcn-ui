@@ -1,19 +1,13 @@
-import { SchemaDefinitions, getZeroState } from "@m6oss/schema-form";
-import {
-  useFormContext,
-  JSONSchema7,
-  ArraySchema,
-  CustomFields,
-} from "@m6oss/schema-form";
+import { SchemaDefinitions, useArrayField } from "@m6oss/schema-form";
+import { JSONSchema7, BaseArraySchema, CustomFields } from "@m6oss/schema-form";
 import { renderField } from "@m6oss/schema-form";
-import { ShadcnErrorMessage } from "./ShadcnErrorMessage";
-import { HiX } from "react-icons/hi";
+import { HiX, HiChevronDown, HiChevronUp } from "react-icons/hi";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 
 /**
  * Array Field Component Template
- * @param {ArraySchema} schema - The schema for the array field.
+ * @param {BaseArraySchema} schema - The schema for the array field.
  * @param {string[]} path - The path to the array field in the form data.
  * @param {SchemaDefinitions} definitions - The definitions object from the schema.
  * @param {CustomFields} customFields - The custom fields object.
@@ -22,14 +16,13 @@ import { Label } from "../ui/label";
  * <ShadcnArrayField schema={schema} path={path} definitions={definitions} customFields={customFields} />
  */
 export const ShadcnArrayField: React.FC<{
-  schema: ArraySchema;
+  schema: BaseArraySchema;
   path: string[];
   definitions: SchemaDefinitions;
   customFields?: CustomFields;
 }> = ({ schema, path, definitions, customFields = {} }) => {
-  const formData = useFormContext((state) => state.formData);
-  const setFormData = useFormContext((state) => state.setFormData);
-  const valueAtPath = path.reduce((acc, key) => acc?.[key], formData) ?? [];
+  const { valueAtPath, errorsAtPath, moveItem, removeItem, addItem } =
+    useArrayField(path, schema, definitions, []);
 
   return (
     <div className="border-dashed rounded-xl border-2 border-gray-400 dark:border-gray-600 p-4 my-4 flex flex-col space-y-2">
@@ -46,14 +39,26 @@ export const ShadcnArrayField: React.FC<{
           <div className="relative p-4 my-2" key={index}>
             <Button
               variant={"destructive"}
-              className="absolute top-4 right-0 rounded-full size-10 flex items-center justify-center"
-              onClick={() => {
-                const newArray = [...valueAtPath];
-                newArray.splice(index, 1);
-                setFormData(path, newArray);
-              }}
+              className="absolute top-4 right-0 rounded-none size-10 flex items-center justify-center"
+              onClick={() => removeItem(index)}
             >
               <HiX />
+            </Button>
+            <Button
+              // variant={"destructive"}
+              className="absolute top-4 right-10 rounded-none size-10 flex items-center justify-center"
+              onClick={() => moveItem(index, "up")}
+              disabled={index === 0}
+            >
+              <HiChevronUp />
+            </Button>
+            <Button
+              // variant={"destructive"}
+              className="absolute top-4 right-20 rounded-none size-10 flex items-center justify-center"
+              onClick={() => moveItem(index, "down")}
+              disabled={index === valueAtPath.length - 1}
+            >
+              <HiChevronDown />
             </Button>
             {renderField(
               schema.items as JSONSchema7,
@@ -63,18 +68,15 @@ export const ShadcnArrayField: React.FC<{
             )}
           </div>
         ))}
-      <Button
-        type="button"
-        onClick={() => {
-          setFormData(path, [
-            ...valueAtPath,
-            getZeroState(schema.items as JSONSchema7, definitions),
-          ]);
-        }}
-      >
+      <Button type="button" onClick={addItem}>
         Add Item
       </Button>
-      <ShadcnErrorMessage path={path} />
+      {errorsAtPath &&
+        errorsAtPath.map((error, index) => (
+          <p key={index} className="text-sm font-medium text-destructive">
+            {error.message}
+          </p>
+        ))}
     </div>
   );
 };
