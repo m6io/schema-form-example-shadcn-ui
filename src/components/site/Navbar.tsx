@@ -30,7 +30,7 @@ export function Navbar() {
                   <SiYoutube className="h-full w-full" />
                 </a>
                 <a
-                  href="https://github.com/m6io/schema-form"
+                  href="https://github.com/m6io/react-formgen"
                   target="_blank"
                   className="text-primary size-10 p-2 hover:text-[#4078c0] dark:hover:text-[#4078c0]" // Brand color from https://brandcolors.net/b/github
                 >
