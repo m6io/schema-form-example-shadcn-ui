@@ -1,4 +1,4 @@
-import { CustomFields } from "@m6oss/schema-form";
+import { CustomFields } from "@react-formgen/json-schema";
 import { ShadcnArrayField } from "./ShadcnArrayField";
 import { ShadcnBooleanField } from "./ShadcnBooleanField";
 import { ShadcnNumberField } from "./ShadcnNumberField";

@@ -1,7 +1,7 @@
-import { BaseObjectSchema, useFieldErrors } from "@m6oss/schema-form";
-import { SchemaDefinitions } from "@m6oss/schema-form";
-import { JSONSchema7, CustomFields } from "@m6oss/schema-form";
-import { renderField } from "@m6oss/schema-form";
+import { BaseObjectSchema, useFieldErrors } from "@react-formgen/json-schema";
+import { SchemaDefinitions } from "@react-formgen/json-schema";
+import { JSONSchema7, CustomFields } from "@react-formgen/json-schema";
+import { renderField } from "@react-formgen/json-schema";
 import { Label } from "../ui/label";
 
 /**

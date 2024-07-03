@@ -1,4 +1,4 @@
-import { StringSchema, useFieldErrors, useFieldData } from "@m6oss/schema-form";
+import { StringSchema, useFieldErrors, useFieldData } from "@react-formgen/json-schema";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";

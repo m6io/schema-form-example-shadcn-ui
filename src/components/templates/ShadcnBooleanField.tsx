@@ -2,7 +2,7 @@ import {
   BooleanSchema,
   useFieldData,
   useFieldErrors,
-} from "@m6oss/schema-form";
+} from "@react-formgen/json-schema";
 import { Label } from "../ui/label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Switch } from "../ui/switch";

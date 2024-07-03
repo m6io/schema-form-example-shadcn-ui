@@ -1,7 +1,7 @@
-import { ErrorObject } from "@m6oss/schema-form";
-import { useFormContext, JSONSchema7, CustomFields } from "@m6oss/schema-form";
-import { renderField } from "@m6oss/schema-form";
-import { AjvInstance } from "@m6oss/schema-form";
+import { ErrorObject } from "@react-formgen/json-schema";
+import { useFormContext, JSONSchema7, CustomFields } from "@react-formgen/json-schema";
+import { renderField } from "@react-formgen/json-schema";
+import { AjvInstance } from "@react-formgen/json-schema";
 import { Button } from "../ui/button";
 
 /**

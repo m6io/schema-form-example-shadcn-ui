@@ -1,5 +1,5 @@
 import formSchema from "./schema.json";
-import { JSONSchema7, FormProvider } from "@m6oss/schema-form";
+import { JSONSchema7, FormProvider } from "@react-formgen/json-schema";
 import { Layout } from "./components/site/Layout";
 import {
   shadcnCustomFields,

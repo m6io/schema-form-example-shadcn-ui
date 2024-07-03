@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
-    "@m6oss/schema-form": "0.0.1-alpha.3",
+    "@react-formgen/json-schema": "0.0.0-alpha.0",
     "@radix-ui/react-checkbox": "^1.1.0",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-popover": "^1.1.1",

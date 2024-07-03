@@ -1,6 +1,6 @@
-import { SchemaDefinitions, useArrayField } from "@m6oss/schema-form";
-import { JSONSchema7, BaseArraySchema, CustomFields } from "@m6oss/schema-form";
-import { renderField } from "@m6oss/schema-form";
+import { SchemaDefinitions, useArrayField } from "@react-formgen/json-schema";
+import { JSONSchema7, BaseArraySchema, CustomFields } from "@react-formgen/json-schema";
+import { renderField } from "@react-formgen/json-schema";
 import { HiX, HiChevronDown, HiChevronUp } from "react-icons/hi";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
