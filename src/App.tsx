@@ -1,4 +1,4 @@
-import formSchema from "./schema.json";
+import React, { useState, useEffect } from "react";
 import { JSONSchema7, FormProvider } from "@react-formgen/json-schema";
 import { Layout } from "./components/site/Layout";
 import {
@@ -7,7 +7,17 @@ import {
 } from "./components/templates";
 
 const App: React.FC = () => {
-  const schema: JSONSchema7 = formSchema as JSONSchema7;
+  const [schema, setSchema] = useState<JSONSchema7 | null>(null);
+
+  useEffect(() => {
+    const fetchSchema = async () => {
+      const response = await fetch("/schema.json");
+      const schema = await response.json();
+      setSchema(schema);
+    };
+
+    fetchSchema();
+  }, []);
 
   const initialData = {
     firstName: "John Doe",
@@ -27,13 +37,15 @@ const App: React.FC = () => {
   return (
     <Layout>
       <div className="max-w-2xl pb-10">
-        <FormProvider schema={schema} initialData={initialData}>
-          <ShadcnFormComponent
-            onSubmit={(data) => console.log("Form submitted:", data)}
-            onError={(errors) => console.error("Form errors:", errors)}
-            customFields={shadcnCustomFields}
-          />
-        </FormProvider>
+        {schema && (
+          <FormProvider schema={schema} initialData={initialData}>
+            <ShadcnFormComponent
+              onSubmit={(data) => console.log("Form submitted:", data)}
+              onError={(errors) => console.error("Form errors:", errors)}
+              customFields={shadcnCustomFields}
+            />
+          </FormProvider>
+        )}
       </div>
     </Layout>
   );
