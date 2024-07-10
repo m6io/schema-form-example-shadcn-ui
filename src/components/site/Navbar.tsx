@@ -16,7 +16,7 @@ export function Navbar() {
                 className="inline-flex h-10 items-center justify-center text-lg font-bold text-primary"
                 href="/"
               >
-                @react-formgen/json-schema
+                @react-formgen
               </a>
             </div>
             <div className="flex flex-1 items-center justify-end">
